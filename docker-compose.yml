@@ -1,0 +1,126 @@
+version: '3.7'
+
+services:
+  # Zookeeper
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+
+  # Kafka
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+
+  # OpenTelemetry Collector
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver port
+      - "4318:4318" # OTLP HTTP receiver port
+    depends_on:
+      - kafka
+
+# Jaeger Ingester
+  jaeger-ingester:
+    image: jaegertracing/jaeger-ingester:latest
+    command: ["--kafka.consumer.brokers=kafka:9092"]
+    environment:
+      SPAN_STORAGE_TYPE: cassandra
+      CASSANDRA_SERVERS: cassandra:9042
+      CASSANDRA_KEYSPACE: jaeger_v1_test
+      KAFKA_CONSUMER_BROKERS: kafka:9092
+      KAFKA_CONSUMER_TOPIC: otel-spans
+    depends_on:
+      - kafka
+      - cassandra
+
+# Jaeger Query UI
+  jaeger-query:
+    image: jaegertracing/jaeger-query:latest
+    environment:
+      SPAN_STORAGE_TYPE: cassandra
+      CASSANDRA_SERVERS: cassandra:9042
+    ports:
+      - "16686:16686"
+    depends_on:
+      - cassandra
+
+  # MongoDB for Jaeger storage
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_DATABASE: jaeger
+    ports:
+      - "27017:27017"
+
+  # Grafana
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "admin"
+    depends_on:
+      - jaeger-query
+      - loki
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+
+  # Loki for log aggregation
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki-local-config.yaml
+    volumes:
+      - ./loki-local-config.yaml:/etc/loki-local-config.yaml
+      - loki-data:/tmp/loki  # Ensure the WAL directory is writable
+
+  # Promtail for log scraping and sending to Loki
+  promtail:
+    image: grafana/promtail:latest
+    command: -config.file=/etc/promtail-config.yaml
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail-config.yaml
+      - /var/log:/var/log
+
+  # Provectus Kafka UI for viewing Kafka topics
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9092"
+      KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
+    depends_on:
+      - kafka
+      
+  cassandra:
+    image: cassandra:latest
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_CLUSTER_NAME: "jaeger"
+      CASSANDRA_SEEDS: "cassandra"
+
+volumes:
+  grafana-storage:
+  mongo-data:
+  loki-data:
