@@ -1,5 +1,0 @@
-com/example/delivery/entity/DeliveryTime.class
-com/example/delivery/controller/DeliveryController.class
-com/example/delivery/service/DeliveryService.class
-com/example/deliveryservice/DeliveryServiceApplication.class
-com/example/delivery/repository/DeliveryTimeRepository.class
