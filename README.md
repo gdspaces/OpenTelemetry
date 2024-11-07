@@ -54,7 +54,6 @@ This flow captures server health metrics such as CPU, memory, and load.
 1. **Clone the Repository**:
     ```bash
     git clone <repository_url>
-    cd open-telemetry-demo
     ```
 
 2. **Build the Spring Boot Application and initial setup**:
