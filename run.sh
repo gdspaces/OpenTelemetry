@@ -4,11 +4,11 @@ docker-compose up -d
 
 cd order-inventory-delivery-system/
 
-docker-compose up -d
-
 cd DeliveryService
 
 rm -rf nohup.out
+
+mvn clean install
 
 nohup java -javaagent:../opentelemetry-javaagent.jar \
      -Dotel.exporter.otlp.endpoint=http://0.0.0.0:4317 \
@@ -24,6 +24,8 @@ cd ../InventoryService
 
 rm -rf nohup.out
 
+mvn clean install
+
 nohup java -javaagent:../opentelemetry-javaagent.jar \
      -Dotel.exporter.otlp.endpoint=http://0.0.0.0:4317 \
      -Dotel.exporter.otlp.protocol=grpc \
@@ -37,6 +39,8 @@ nohup java -javaagent:../opentelemetry-javaagent.jar \
 cd ../OrderService
 
 rm -rf nohup.out
+
+mvn clean install
 
 nohup java -javaagent:../opentelemetry-javaagent.jar \
      -Dotel.exporter.otlp.endpoint=http://0.0.0.0:4317 \
@@ -58,5 +62,4 @@ nohup otelcol --config otel-collector-config.yaml &
 
 cd ..
 
-docker-compose up -d
 
