@@ -1,8 +1,8 @@
 #!/bin/sh
 
-docker-compose up -d
-
 cd order-inventory-delivery-system/
+
+docker-compose up -d
 
 cd DeliveryService
 
