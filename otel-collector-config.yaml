@@ -2,20 +2,18 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: "0.0.0.0:4317"  
+        endpoint: "0.0.0.0:4317"
       http:
-
-processors:
-  batch:
+        endpoint: "0.0.0.0:55681"
 
 exporters:
-  kafka:
-    brokers: ["kafka:9092"]
-    topic: otel-spans
+  otlp:
+    endpoint: "jaeger-collector:14250"
+    tls:
+      insecure: true  # Disable TLS verification for local setup
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch]
-      exporters: [kafka]
+      exporters: [otlp]
