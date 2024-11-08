@@ -45,7 +45,7 @@ This flow captures server health metrics such as CPU, memory, and load.
 
 ### Prerequisites
 
-1. **Java 11 or later** (for Spring Boot Application)
+1. **Java 17 or later** (for Spring Boot Application)
 2. **Docker** and **Docker Compose** (for deploying Jaeger, Prometheus, Kafka, Cassandra, and Grafana)
 3. **Prometheus and Grafana** configured for data storage and visualization
 
