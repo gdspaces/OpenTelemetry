@@ -14,6 +14,9 @@ This flow tracks request traces across services, capturing latency and dependenc
 
 - **Technology Stack**:
   - **Java Spring Boot Application** -> **OpenTelemetry SDK** -> **Jaeger Collector** -> **Kafka** -> **Jaeger Ingester** -> **Cassandra** -> **Jaeger Query**
+ 
+    ![image](https://github.com/user-attachments/assets/420c64a6-381d-4604-bf70-c88c190ea6e9)
+
 
 - **Explanation**:
   - The Java Spring Boot application generates traces using OpenTelemetry SDK.
@@ -30,6 +33,9 @@ This flow collects application-specific metrics like request rate, error rate, a
   - The Java Spring Boot application collects metrics using OpenTelemetry SDK.
   - Prometheus scrapes these metrics and stores them for analysis.
   - Grafana provides a visual dashboard for real-time application metrics.
+ 
+    ![image](https://github.com/user-attachments/assets/2d709886-50d4-4d59-bbc4-581bdde13d9d)
+
 
 ### 3. Server Metrics Flow
 This flow captures server health metrics such as CPU, memory, and load.
