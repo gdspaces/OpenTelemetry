@@ -73,7 +73,13 @@ This flow captures server health metrics such as CPU, memory, and load.
 5. **Access Dashboards**:
    - **Jaeger UI**: [http://localhost:16686](http://localhost:16686) (for viewing traces)
    - **Grafana**: [http://localhost:3000](http://localhost:3000) (for viewing application and server metrics)
-
+   - **Host Metrics**: [http://localhost:8889/metrics](http://localhost:8889/metrics) (for server metrics)
+   - **Application Metrics**: [http://localhost:9464/metrics](http://localhost:9464/metrics) (for Delivery Service Application metrics)
+   - **Application Metrics**: [http://localhost:9465/metrics](http://localhost:9465/metrics) (for Invetory Service Application metrics)
+   - **Application Metrics**: [http://localhost:9466/metrics](http://localhost:9466/metrics) (for Order Service Application metrics)
+   - **Kafka UI**: [http://localhost:8080/](http://localhost:8080/) (for monitoring Kafka)
+   - **Prometheus UI**: [http://localhost:9090/](http://localhost:9090/) (for monitoring Prometheus)
+   - 
 ## Usage
 
 1. **Tracing**:
