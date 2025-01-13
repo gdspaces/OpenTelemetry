@@ -2,15 +2,14 @@ package com.example.delivery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @SpringBootApplication
 public class DeliveryServiceApplication {
-	
-    private static final Logger log = LoggerFactory.getLogger(DeliveryServiceApplication.class);
 
     public static void main(String[] args) {
+	    log.info("DeliveryServiceApplication Started -");
         SpringApplication.run(DeliveryServiceApplication.class, args);
     }
 }
